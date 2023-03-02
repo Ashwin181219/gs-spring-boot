@@ -63,3 +63,27 @@ stages:
         ResourceGroupName: 'vm-rg-third'
         SlotName: 'dev'
         packageForLinux: '$(system.defaultworkingdirectory)/drop/*/target/*.jar'
+
+
+- stage: UatDeployment123 
+  jobs:
+  - job: UatWebAppDeployment
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        itemPattern: '**/*.jar'
+        downloadPath: '$(system.defaultworkingdirectory)'
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Free Trial(50943cf1-f86f-411b-9120-6eea96d16f3e)'
+        appType: 'webAppLinux'
+        WebAppName: 'deployment-slot-app-service'
+        deployToSlotOrASE: true
+        ResourceGroupName: 'vm-rg-third'
+        SlotName: 'uat'
+        packageForLinux: '$(system.defaultworkingdirectory)/drop/*/target/*.jar'
