@@ -8,9 +8,9 @@ pool:
 
 stages:
 - stage: BuildWebapp123
-  displayName: Build-app-maven
+  displayName: Buildappmaven1
   jobs:
-    - job: build-using-maven 
+    - job: buildusingmaven 
       steps:
 
       - task: Maven@4
@@ -41,9 +41,9 @@ stages:
 
 
 - stage: DevDeployment123 
-  displayName: Dev-env
+  displayName: Devenv1
   jobs:
-  - job: dev-webapp-deployment
+  - job: devwebappdeployment
     steps:
     - task: DownloadBuildArtifacts@1
       inputs:
