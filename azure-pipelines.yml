@@ -88,7 +88,7 @@ stages:
         SlotName: 'uat'
         packageForLinux: '$(system.defaultworkingdirectory)/drop/*/target/*.jar'
 
-- stage: 
+- stage: PreProdEnv
   jobs:
   - deployment: PreProdDeployment 
     environment: 'PreProd'
