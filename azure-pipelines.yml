@@ -8,6 +8,7 @@ pool:
 
 stages:
 - stage: Build_Webapp
+  displayName: Build-app-maven
   jobs:
     - job: build-using-maven 
       steps:
@@ -39,7 +40,8 @@ stages:
       condition: succeededOrFailed()
 
 
-- stage: Dev_Deployment
+- stage: Dev_Deployment 
+  displayName: Dev-env
   jobs:
   - job: dev-webapp-deployment
     steps:
