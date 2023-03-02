@@ -59,4 +59,4 @@ stages:
         azureSubscription: 'Free Trial(50943cf1-f86f-411b-9120-6eea96d16f3e)'
         appType: 'webAppLinux'
         WebAppName: 'devvv'
-        packageForLinux: '$(System.DefaultWorkingDirectory)drop/**/target/*.jar'
+        packageForLinux: '$(system.defaultworkingdirectory)/drop/*/target/*.jar'
