@@ -7,7 +7,7 @@ pool:
 
 
 stages:
-- stage: Build_Webapp
+- stage: BuildWebapp123
   displayName: Build-app-maven
   jobs:
     - job: build-using-maven 
@@ -40,7 +40,7 @@ stages:
       condition: succeededOrFailed()
 
 
-- stage: Dev_Deployment 
+- stage: DevDeployment123 
   displayName: Dev-env
   jobs:
   - job: dev-webapp-deployment
