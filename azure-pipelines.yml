@@ -1,24 +1,60 @@
+trigger:
+- master
+
 pool:
-  vmImage: 'ubuntu-18.04' # Hosted Ubuntu 1604
+  vmImage: 'ubuntu-latest' # Hosted Ubuntu 1604
   demands: maven
 
-steps:
-- task: Maven@3
-  displayName: 'Maven app/pom.xml'
-  inputs:
-    mavenPomFile: 'app/pom.xml'
-  
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**/*.jar'
-    TargetFolder: '$(build.artifactstagingdirectory)'
-  condition: succeededOrFailed()
+stages:
+- stage: Build_Webapp
+  jobs:
+    - job: build-using-maven 
+      steps:
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-  condition: succeededOrFailed()
+      - task: Maven@4
+        inputs:
+          mavenPomFile: 'app/pom.xml'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          javaHomeOption: 'JDKVersion'
+          mavenVersionOption: 'Default'
+          mavenAuthenticateFeed: false
+          effectivePomSkip: false
+          sonarQubeRunAnalysis: false
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(system.defaultworkingdirectory)'
+          Contents: '**/*.jar'
+          TargetFolder: '$(build.artifactstagingdirectory)'
+        condition: succeededOrFailed()
+
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
+      condition: succeededOrFailed()
+
+
+- stage: Dev_Deployment
+  jobs:
+  - job: dev-webapp-deployment
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        itemPattern: '**/*.jar'
+        downloadPath: '$(system.defaultworkingdirectory)'
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Free Trial(50943cf1-f86f-411b-9120-6eea96d16f3e)'
+        appType: 'webAppLinux'
+        WebAppName: 'devvv'
+        packageForLinux: '$(System.DefaultWorkingDirectory)drop/**/target/*.jar'
